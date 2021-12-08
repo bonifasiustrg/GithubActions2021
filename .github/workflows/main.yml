@@ -1,0 +1,25 @@
+name: manage
+on: 
+  pull_request:
+  push:
+    branches:
+      - main
+      
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Commit
+        run: |
+          git config --local user.name "bonifasiustrg"
+          git config --local user.email "bonifasius.tambak@gmail.com"
+          git add .
+          git commit -m
+      - name: Push
+        uses: ad-m/GithubActions2021@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: "master"
+          repository: "bonifasiustrg/GithubActions2021"
