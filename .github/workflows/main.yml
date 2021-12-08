@@ -1,8 +1,9 @@
 name: manage
 on: 
-  pull_request:
   push:
-    branches: [main]
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
       
 jobs:
   build:
@@ -10,7 +11,15 @@ jobs:
     steps:
 
       - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content to github runner
+        uses: actions/checkout@v2
+        
+      - uses: bonifasiustrg/GithubActions2021@v1
+        with:
+          script: |
+            import os
+            print("Directory contents:")
+            for f in os.listdir():
+                print(f)  
 
       - name: setup python
         uses: actions/setup-python@v2
@@ -22,10 +31,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: execute py script # run sj-gobierno.py to get the latest data
+      - name: compile python script
         run: python main.py
       
-      - name: Commit files
+      - name: Commit
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -36,3 +45,11 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+      - name: Commit changes
+        uses: bonifasiustrg/add-and-commit@v7
+        with:
+          author_name: bonifasiustrg
+          author_email: bonifasiust@gmail.com
+          message: 'commit  file'
+          add: '*.py --force'
+          cwd: './GithubActions2021/'
