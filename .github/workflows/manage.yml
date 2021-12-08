@@ -1,0 +1,14 @@
+name: manage
+on: 
+  pull_request:
+  push:
+    branches:
+      - main
+      
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GithubActions2021
+        uses: actions/checkout@v2
+      - run: echo
