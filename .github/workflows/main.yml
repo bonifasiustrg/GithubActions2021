@@ -2,24 +2,37 @@ name: manage
 on: 
   pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
       
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Commit
-        run: |
-          git config --local user.name "bonifasiustrg"
-          git config --local user.email "bonifasius.tambak@gmail.com"
-          git add .
-          git commit -m
-      - name: Push
-        uses: ad-m/GithubActions2021@master
+
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner
+
+      - name: setup python
+        uses: actions/setup-python@v2
         with:
-          github_token: ${{ secrets.TOKEN }}
-          branch: "master"
-          repository: "bonifasiustrg/GithubActions2021"
+          python-version: '3.10.1' # install the python version needed
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: execute py script # run sj-gobierno.py to get the latest data
+        run: python main.py
+      
+      - name: Commit files
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "Added member"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
